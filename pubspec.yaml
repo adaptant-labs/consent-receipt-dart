@@ -1,10 +1,13 @@
 name: consent_receipt_dart
 description: A library for working with Kantara Initiative Consent Receipts.
-# version: 1.0.0
-# homepage: https://www.example.com
+version: 0.0.1
 authors:
   - Adaptant Labs <labs@adaptant.io>
   - Paul Mundt <paul.mundt@adaptant.io>
+
+homepage: https://github.com/adaptant-labs/consent-receipt-dart
+repository: https://github.com/adaptant-labs/consent-receipt-dart
+issue_tracker: https://github.com/adaptant-labs/consent-receipt-dart/issues
 
 environment:
   sdk: '>=2.6.0-dev.7.0 <3.0.0'

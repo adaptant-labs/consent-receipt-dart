@@ -1,22 +1,21 @@
-A library for Dart developers.
+# consent-receipt-dart
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+[![Build Status](https://travis-ci.com/adaptant-labs/consent-receipt-dart.svg?branch=master)](https://travis-ci.com/adaptant-labs/consent-receipt-dart)
+[![Pub](https://img.shields.io/pub/v/consent-receipt-dart.svg)](https://pub.dartlang.org/packages/consent-receipt-dart)
 
-## Usage
+Dart library for working with Kantara Initiative [Consent Receipts][cr].
 
-A simple usage example:
+Implements `KI-CR-v1.1.0` of the consent receipt specification.
 
-```dart
-import 'package:consent_receipt_dart/consent_receipt_dart.dart';
-
-main() {
-  var awesome = new Awesome();
-}
-```
+[cr]: https://kantarainitiative.org/confluence/display/infosharing/Consent+Receipt+Specification
 
 ## Features and bugs
 
 Please file feature requests and bugs at the [issue tracker][tracker].
 
-[tracker]: http://example.com/issues/replaceme
+[tracker]: https://github.com/adaptant-labs/consent-receipt-dart/issues
+
+## License
+
+Licensed under the terms of the Apache 2.0 license, the full version of which can be found in the
+[LICENSE](https://raw.githubusercontent.com/adaptant-labs/consent-receipt-dart/master/LICENSE) file included in the distribution.
