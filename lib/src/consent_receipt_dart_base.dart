@@ -20,7 +20,6 @@ int generateTimestamp() {
 class ConsentReceiptGenerator {
   final String countryCode;
   final String privacyPolicy;
-  final String shortNotice;
   final String publicKey;
 
   final List<DataController> piiControllers;
@@ -34,14 +33,10 @@ class ConsentReceiptGenerator {
     @required this.countryCode,
     @required this.piiControllers,
     @required this.privacyPolicy,
-    this.shortNotice,
     this.publicKey,
   })  : assert(countryExists(countryCode)),
         assert(isURL(privacyPolicy,
-            requireProtocol: true, protocols: ['http', 'https'])),
-        assert(shortNotice == null ||
-            isURL(shortNotice,
-                requireProtocol: true, protocols: ['http', 'https']));
+            requireProtocol: true, protocols: ['http', 'https']));
 
   ConsentReceipt generateConsentReceipt(
       {@required String collectionMethod,
