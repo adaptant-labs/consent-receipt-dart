@@ -3,7 +3,6 @@ import 'package:alpha2_countries/alpha2_countries.dart';
 import 'package:consent_receipt_dart/src/data_categories.dart';
 import 'package:consent_receipt_dart/src/purpose_specification.dart';
 import 'package:validators/validators.dart';
-import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
 ConsentReceipt consentReceiptFromJson(String str) =>

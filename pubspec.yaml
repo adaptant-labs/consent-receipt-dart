@@ -14,7 +14,7 @@ environment:
 
 dependencies:
   alpha2_countries: ^1.0.5
-  validators: 2.0.0+1
+  validators: ^2.0.0+1
   uuid: ^2.0.2
 
 dev_dependencies:
