@@ -16,6 +16,7 @@ dependencies:
   alpha2_countries: ^1.0.5
   validators: ^2.0.0+1
   uuid: ^2.0.2
+  meta: ^1.1.7
 
 dev_dependencies:
   pedantic: ^1.8.0

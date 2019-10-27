@@ -4,6 +4,7 @@ import 'package:consent_receipt_dart/src/data_categories.dart';
 import 'package:consent_receipt_dart/src/purpose_specification.dart';
 import 'package:validators/validators.dart';
 import 'package:uuid/uuid.dart';
+import 'package:meta/meta.dart';
 
 ConsentReceipt consentReceiptFromJson(String str) =>
     ConsentReceipt.fromJson(json.decode(str));
