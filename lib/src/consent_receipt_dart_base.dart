@@ -71,6 +71,9 @@ class Purpose {
   final bool thirdPartyDisclosure;
   final String thirdPartyName;
 
+  // Extension for OAuth scopes pertaining to this specific purpose of processing
+  final String scopes;
+
   Purpose({
     this.purpose,
     this.consentType = "EXPLICIT",
@@ -80,6 +83,7 @@ class Purpose {
     @required this.termination,
     this.thirdPartyDisclosure = false,
     this.thirdPartyName,
+    this.scopes,
   })  : assert(consentType != null && consentType.isNotEmpty),
         assert(piiCategory != null && piiCategory.isNotEmpty),
         assert(termination != null && termination.isNotEmpty),
@@ -101,6 +105,7 @@ class Purpose {
         termination: json['termination'],
         thirdPartyDisclosure: json['thirdPartyDisclosure'],
         thirdPartyName: json['thirdPartyName'],
+	scopes: json['scopes'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -114,11 +119,12 @@ class Purpose {
         "termination": termination,
         "thirdPartyDisclosure": thirdPartyDisclosure,
         "thirdPartyName": thirdPartyName,
+	"scopes": scopes,
       };
 
   @override
   String toString() {
-    return 'Purpose[purpose=$purpose, purposeCategory=$purposeCategory, piiCategory=$piiCategory, primaryPurpose=$primaryPurpose, termination=$termination, thirdPartyDisclosure=$thirdPartyDisclosure, thirdPartyName=$thirdPartyName]';
+    return 'Purpose[purpose=$purpose, purposeCategory=$purposeCategory, piiCategory=$piiCategory, primaryPurpose=$primaryPurpose, termination=$termination, thirdPartyDisclosure=$thirdPartyDisclosure, thirdPartyName=$thirdPartyName, scopes=$scopes]';
   }
 }
 
