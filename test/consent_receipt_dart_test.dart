@@ -3,7 +3,7 @@ import 'package:validators/validators.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('A group of tests', () {
+  group('Consent receipt', () {
     ConsentReceiptGenerator gen;
     ConsentReceipt? cr;
 
