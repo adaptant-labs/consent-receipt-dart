@@ -1,7 +1,7 @@
 # consent-receipt-dart
 
 [![Build Status](https://travis-ci.com/adaptant-labs/consent-receipt-dart.svg?branch=master)](https://travis-ci.com/adaptant-labs/consent-receipt-dart)
-[![Pub](https://img.shields.io/pub/v/consent-receipt-dart.svg)](https://pub.dartlang.org/packages/consent-receipt-dart)
+[![Pub](https://img.shields.io/pub/v/consent-receipt-dart.svg)](https://pub.dev/packages/consent_receipt_dart)
 
 Dart library for working with Kantara Initiative [Consent Receipts][cr].
 
