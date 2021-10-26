@@ -4,7 +4,6 @@ import 'package:consent_receipt_dart/src/data_categories.dart';
 import 'package:consent_receipt_dart/src/purpose_specification.dart';
 import 'package:validators/validators.dart';
 import 'package:uuid/uuid.dart';
-import 'package:meta/meta.dart';
 
 ConsentReceipt consentReceiptFromJson(String str) =>
     ConsentReceipt.fromJson(json.decode(str));
@@ -20,7 +19,7 @@ int generateTimestamp() {
 class ConsentReceiptGenerator {
   final String countryCode;
   final String privacyPolicy;
-  final String publicKey;
+  final String? publicKey;
 
   final List<DataController> piiControllers;
 
@@ -30,28 +29,28 @@ class ConsentReceiptGenerator {
       _countries.resolveName(isoCode) != null;
 
   ConsentReceiptGenerator({
-    @required this.countryCode,
-    @required this.piiControllers,
-    @required this.privacyPolicy,
+    required this.countryCode,
+    required this.piiControllers,
+    required this.privacyPolicy,
     this.publicKey,
   })  : assert(countryExists(countryCode)),
         assert(isURL(privacyPolicy,
             requireProtocol: true, protocols: ['http', 'https']));
 
   ConsentReceipt generateConsentReceipt(
-      {@required String collectionMethod,
-      @required String subjectId,
-      @required List<Service> services,
-      List<DataCategory> sensitiveData}) {
-    final ConsentReceipt _cr = ConsentReceipt(
-      piiControllers: this.piiControllers,
-      jurisdiction: this.countryCode.toUpperCase(),
+      {required String collectionMethod,
+      required String subjectId,
+      required List<Service> services,
+      List<DataCategory>? sensitiveData}) {
+    final _cr = ConsentReceipt(
+      piiControllers: piiControllers,
+      jurisdiction: countryCode.toUpperCase(),
       consentTimestamp: generateTimestamp(),
       collectionMethod: collectionMethod,
       consentReceiptID: _uuid.v4(),
       piiPrincipalId: subjectId,
-      policyURL: this.privacyPolicy,
-      publicKey: publicKey ?? '',
+      policyURL: privacyPolicy,
+      publicKey: publicKey,
       services: services,
       sensitive: sensitiveData != null,
       spiCat: sensitiveData,
@@ -62,33 +61,33 @@ class ConsentReceiptGenerator {
 }
 
 class Purpose {
-  final String purpose;
+  final String? purpose;
   final PurposeSpecification purposeCategory;
   final String consentType;
   final List<DataCategory> piiCategory;
   final bool primaryPurpose;
   final String termination;
   final bool thirdPartyDisclosure;
-  final String thirdPartyName;
+  final String? thirdPartyName;
 
   // Extension for OAuth scopes pertaining to this specific purpose of processing
-  final String scopes;
+  final String? scopes;
 
   Purpose({
     this.purpose,
-    this.consentType = "EXPLICIT",
-    @required this.purposeCategory,
-    @required this.piiCategory,
+    this.consentType = 'EXPLICIT',
+    required this.purposeCategory,
+    required this.piiCategory,
     this.primaryPurpose = false,
-    @required this.termination,
+    required this.termination,
     this.thirdPartyDisclosure = false,
     this.thirdPartyName,
     this.scopes,
-  })  : assert(consentType != null && consentType.isNotEmpty),
-        assert(piiCategory != null && piiCategory.isNotEmpty),
-        assert(termination != null && termination.isNotEmpty),
+  })  : assert(consentType.isNotEmpty),
+        assert(piiCategory.isNotEmpty),
+        assert(termination.isNotEmpty),
         assert((thirdPartyDisclosure == true &&
-                (thirdPartyName != null || thirdPartyName.isNotEmpty)) ||
+                (thirdPartyName != null && thirdPartyName.isNotEmpty)) ||
             (thirdPartyDisclosure == false &&
                 (thirdPartyName == null || thirdPartyName.isEmpty)));
 
@@ -105,22 +104,30 @@ class Purpose {
         termination: json['termination'],
         thirdPartyDisclosure: json['thirdPartyDisclosure'],
         thirdPartyName: json['thirdPartyName'],
-	scopes: json['scopes'],
+        scopes: json['scopes'],
       );
 
-  Map<String, dynamic> toJson() => {
-        "purpose": purpose,
-        "consentType": consentType,
-        "purposeCategory": purposeCategory.purposeNameWithPrefix,
-        "piiCategory": piiCategory
-            .map((category) => category.categoryNameWithPrefix)
-            .toList(),
-        "primaryPurpose": primaryPurpose,
-        "termination": termination,
-        "thirdPartyDisclosure": thirdPartyDisclosure,
-        "thirdPartyName": thirdPartyName,
-	"scopes": scopes,
-      };
+  Map<String, dynamic> toJson() {
+    var json = <String, dynamic>{};
+
+    json['purpose'] = purpose;
+    json['consentType'] = consentType;
+    json['purposeCategory'] = purposeCategory.purposeNameWithPrefix;
+    json['piiCategory'] =
+        piiCategory.map((category) => category.categoryNameWithPrefix).toList();
+    json['primaryPurpose'] = primaryPurpose;
+    json['termination'] = termination;
+    json['thirdPartyDisclosure'] = thirdPartyDisclosure;
+    if (thirdPartyDisclosure == true) {
+      json['thirdPartyName'] = thirdPartyName;
+    }
+
+    if (scopes != null) {
+      json['scopes'] = scopes;
+    }
+
+    return json;
+  }
 
   @override
   String toString() {
@@ -132,7 +139,7 @@ class Service {
   final String service;
   final List<Purpose> purposes;
 
-  Service({@required this.service, @required this.purposes});
+  Service({required this.service, required this.purposes});
 
   factory Service.fromJson(Map<String, dynamic> json) => Service(
         service: json['service'],
@@ -142,8 +149,8 @@ class Service {
       );
 
   Map<String, dynamic> toJson() => {
-        "service": service,
-        "purposes": purposes,
+        'service': service,
+        'purposes': purposes,
       };
 
   @override
@@ -155,18 +162,18 @@ class Service {
 class PostalAddress {
   final String addressCountry;
   final String addressLocality;
-  final String addressRegion;
-  final String postOfficeBoxNumber;
+  final String? addressRegion;
+  final String? postOfficeBoxNumber;
   final String postalCode;
   final String streetAddress;
 
   PostalAddress({
-    @required this.addressCountry,
-    @required this.addressLocality,
+    required this.addressCountry,
+    required this.addressLocality,
     this.addressRegion,
     this.postOfficeBoxNumber,
-    @required this.postalCode,
-    @required this.streetAddress,
+    required this.postalCode,
+    required this.streetAddress,
   });
 
   factory PostalAddress.fromJson(Map<String, dynamic> json) => PostalAddress(
@@ -178,14 +185,22 @@ class PostalAddress {
         streetAddress: json['streetAddress'],
       );
 
-  Map<String, dynamic> toJson() => {
-        "addressCountry": addressCountry,
-        "addressLocality": addressLocality,
-        "addressRegion": addressRegion,
-        "postOfficeBoxNumber": postOfficeBoxNumber,
-        "postalCode": postalCode,
-        "streetAddress": streetAddress
-      };
+  Map<String, dynamic> toJson() {
+    var json = <String, dynamic>{};
+
+    json['addressCountry'] = addressCountry;
+    json['addressLocality'] = addressLocality;
+    if (addressRegion != null) {
+      json['addressRegion'] = addressRegion;
+    }
+    if (postOfficeBoxNumber != null) {
+      json['postOfficeBoxNumber'] = postOfficeBoxNumber;
+    }
+    json['postalCode'] = postalCode;
+    json['streetAddress'] = streetAddress;
+
+    return json;
+  }
 
   @override
   String toString() {
@@ -195,7 +210,7 @@ class PostalAddress {
 
 class ConsentReceipt {
   // The version of the specification that the receipt conforms to.
-  final String version = "KI-CR-v1.1.0";
+  final String version = 'KI-CR-v1.1.0';
 
   // This is the legal jurisdiction(s) under which the processing of personal
   // data occurs, in ISO 3166-1 alpha-2 2-character country code format. May
@@ -205,7 +220,7 @@ class ConsentReceipt {
   final String jurisdiction;
 
   // Timestamp of when consent was issued, e.g. 1435367226
-  int consentTimestamp;
+  int? consentTimestamp;
 
   // Method of collection - how consent was obtained, e.g. "web form"
   final String collectionMethod;
@@ -214,11 +229,11 @@ class ConsentReceipt {
   final String consentReceiptID;
 
   // The Data Controller's public key (optional)
-  final String publicKey;
+  final String? publicKey;
 
   // OPTIONAL: Language in which the consent was obtained. MUST use
   // ISO 639-1:2002 [ISO 639] if this field is used.
-  final String language;
+  final String? language;
 
   // PII Principal-provided identifier. E.g., email address, claim,
   // defined/namespace. Consent is not possible without an identifier.
@@ -239,66 +254,74 @@ class ConsentReceipt {
   final bool sensitive;
 
   // Sensitive Categories of data for a given jurisdiction
-  final List<DataCategory> spiCat;
+  final List<DataCategory>? spiCat;
 
   ConsentReceipt({
-    @required this.jurisdiction,
+    required this.jurisdiction,
     this.consentTimestamp,
-    @required this.collectionMethod,
-    @required this.consentReceiptID,
+    required this.collectionMethod,
+    required this.consentReceiptID,
     this.publicKey,
     this.language,
-    @required this.piiPrincipalId,
-    @required this.piiControllers,
-    @required this.policyURL,
-    @required this.services,
+    required this.piiPrincipalId,
+    required this.piiControllers,
+    required this.policyURL,
+    required this.services,
     this.sensitive = false,
     this.spiCat,
-  })  : assert(piiPrincipalId != null && piiPrincipalId.isNotEmpty),
-        assert(piiControllers != null && piiControllers.isNotEmpty),
-        assert(policyURL != null && policyURL.isNotEmpty),
-        assert(services != null && services.isNotEmpty),
+  })  : assert(piiPrincipalId.isNotEmpty),
+        assert(piiControllers.isNotEmpty),
+        assert(policyURL.isNotEmpty),
+        assert(services.isNotEmpty),
         assert((sensitive == true && spiCat != null) ||
             (sensitive == false && spiCat == null));
 
   factory ConsentReceipt.fromJson(Map<String, dynamic> json) => ConsentReceipt(
-        jurisdiction: json["jurisdiction"],
-        consentTimestamp: json["consentTimestamp"],
-        collectionMethod: json["collectionMethod"],
-        consentReceiptID: json["consentReceiptID"],
-        publicKey: json["publicKey"],
-        language: json["language"],
-        piiPrincipalId: json["piiPrincipalId"],
-        piiControllers: (json["piiControllers"] as List)
+        jurisdiction: json['jurisdiction'],
+        consentTimestamp: json['consentTimestamp'],
+        collectionMethod: json['collectionMethod'],
+        consentReceiptID: json['consentReceiptID'],
+        publicKey: json['publicKey'],
+        language: json['language'],
+        piiPrincipalId: json['piiPrincipalId'],
+        piiControllers: (json['piiControllers'] as List)
             .map((value) => DataController.fromJson(value))
             .toList(),
-        policyURL: json["policyURL"],
-        services: (json["services"] as List)
+        policyURL: json['policyURL'],
+        services: (json['services'] as List)
             .map((value) => Service.fromJson(value))
             .toList(),
-        sensitive: json["sensitive"],
-        spiCat: (json["spiCat"] as List)
+        sensitive: json['sensitive'],
+        spiCat: (json['spiCat'] as List)
             .cast<String>()
             .map((category) => categoryStringToDataCategory(category))
             .toList(),
       );
 
-  Map<String, dynamic> toJson() => {
-        "version": version,
-        "jurisdiction": jurisdiction,
-        "consentTimestamp": consentTimestamp,
-        "collectionMethod": collectionMethod,
-        "consentReceiptID": consentReceiptID,
-        "publicKey": publicKey,
-        "language": language,
-        "piiPrincipalId": piiPrincipalId,
-        "piiControllers": piiControllers,
-        "policyURL": policyURL,
-        "services": services,
-        "sensitive": sensitive,
-        "spiCat":
-            spiCat.map((category) => category.categoryNameWithPrefix).toList(),
-      };
+  Map<String, dynamic> toJson() {
+    var json = <String, dynamic>{};
+
+    json['version'] = version;
+    json['jurisdiction'] = jurisdiction;
+    json['consentTimestamp'] = consentTimestamp;
+    json['collectionMethod'] = collectionMethod;
+    json['consentReceiptID'] = consentReceiptID;
+    if (publicKey != null) {
+      json['publicKey'] = publicKey;
+    }
+    if (language != null) {
+      json['language'] = language;
+    }
+    json['piiPrincipalId'] = piiPrincipalId;
+    json['piiControllers'] = piiControllers;
+    json['policyURL'] = policyURL;
+    json['services'] = services;
+    json['sensitive'] = sensitive;
+    json['spiCat'] = spiCat != null
+        ? spiCat!.map((category) => category.categoryNameWithPrefix).toList()
+        : [];
+    return json;
+  }
 
   @override
   String toString() {
@@ -306,7 +329,7 @@ class ConsentReceipt {
   }
 
   void updateTimestamp() {
-    this.consentTimestamp = generateTimestamp();
+    consentTimestamp = generateTimestamp();
   }
 }
 
@@ -324,40 +347,39 @@ class DataController {
   final String email;
   final String phone;
 
-  final String piiControllerURL;
+  final String? piiControllerURL;
 
   DataController({
-    @required this.piiController,
-    this.onBehalf,
-    @required this.contact,
-    @required this.address,
-    @required this.email,
-    @required this.phone,
+    required this.piiController,
+    this.onBehalf = false,
+    required this.contact,
+    required this.address,
+    required this.email,
+    required this.phone,
     this.piiControllerURL,
-  })  : assert(piiController != null && piiController.isNotEmpty),
-        assert(contact != null && contact.isNotEmpty),
-        assert(address != null),
-        assert(email != null && email.isNotEmpty),
-        assert(phone != null && phone.isNotEmpty);
+  })  : assert(piiController.isNotEmpty),
+        assert(contact.isNotEmpty),
+        assert(email.isNotEmpty),
+        assert(phone.isNotEmpty);
 
   factory DataController.fromJson(Map<String, dynamic> json) => DataController(
-        piiController: json["piiController"],
-        onBehalf: json["on_behalf"],
-        contact: json["contact"],
-        address: PostalAddress.fromJson(json["address"]),
-        email: json["email"],
-        phone: json["phone"],
-        piiControllerURL: json["piiControllerURL"],
+        piiController: json['piiController'],
+        onBehalf: json['on_behalf'],
+        contact: json['contact'],
+        address: PostalAddress.fromJson(json['address']),
+        email: json['email'],
+        phone: json['phone'],
+        piiControllerURL: json['piiControllerURL'],
       );
 
   Map<String, dynamic> toJson() => {
-        "piiController": piiController,
-        "on_behalf": onBehalf,
-        "contact": contact,
-        "address": address,
-        "email": email,
-        "phone": phone,
-        "piiControllerURL": piiControllerURL,
+        'piiController': piiController,
+        'on_behalf': onBehalf,
+        'contact': contact,
+        'address': address,
+        'email': email,
+        'phone': phone,
+        'piiControllerURL': piiControllerURL,
       };
 
   @override

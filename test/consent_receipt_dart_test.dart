@@ -1,12 +1,11 @@
 import 'package:consent_receipt_dart/consent_receipt_dart.dart';
-import 'package:consent_receipt_dart/src/data_categories.dart';
 import 'package:validators/validators.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('A group of tests', () {
     ConsentReceiptGenerator gen;
-    ConsentReceipt cr;
+    ConsentReceipt? cr;
 
     setUp(() {
       gen = ConsentReceiptGenerator(
@@ -33,7 +32,7 @@ void main() {
           subjectId: 'example@example.com',
           services: [
             Service(
-              service: "test service",
+              service: 'test service',
               purposes: [
                 Purpose(
                   piiCategory: [
@@ -49,11 +48,11 @@ void main() {
     });
 
     test('Sensitive setting should be false', () {
-      expect(cr.sensitive, false);
+      expect(cr!.sensitive, false);
     });
 
     test('ReceiptID should be a valid UUID', () {
-      expect(isUUID(cr.consentReceiptID), true);
+      expect(isUUID(cr!.consentReceiptID), true);
     });
   });
 }

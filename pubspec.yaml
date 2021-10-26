@@ -1,23 +1,25 @@
 name: consent_receipt_dart
 description: A library for working with Kantara Initiative Consent Receipts.
-version: 0.0.1
-authors:
-  - Adaptant Labs <labs@adaptant.io>
-  - Paul Mundt <paul.mundt@adaptant.io>
-
+version: 0.1.0
 homepage: https://github.com/adaptant-labs/consent-receipt-dart
 repository: https://github.com/adaptant-labs/consent-receipt-dart
 issue_tracker: https://github.com/adaptant-labs/consent-receipt-dart/issues
+publish_to: 'none'
 
 environment:
-  sdk: '>=2.6.0-dev.7.0 <3.0.0'
+  sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
-  alpha2_countries: ^1.0.5
-  validators: ^2.0.0+1
-  uuid: ^2.0.2
-  meta: ^1.1.7
+  # A null-safe version of this package exists in a git branch, but has
+  # not yet been formally released. This will block the publishing of
+  # this package until it's been formally released.
+  alpha2_countries:
+    git:
+      url: https://github.com/ChangeFinance/alpha2_countries.git
+      ref: flutter-v2
+  validators: ^3.0.0
+  uuid: ^3.0.5
 
 dev_dependencies:
-  pedantic: ^1.8.0
+  lints: ^1.0.0
   test: ^1.6.0

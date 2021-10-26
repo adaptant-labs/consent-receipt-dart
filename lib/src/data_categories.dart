@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 enum DataCategory {
   Biographical,
   Contact,
@@ -64,30 +66,30 @@ extension DataCategoryNameExtension on DataCategory {
   String get categoryName {
     switch (this) {
       case DataCategory.NetworkService:
-        return "Network/Service";
+        return 'Network/Service';
       case DataCategory.HRData:
-        return "HR Data";
+        return 'HR Data';
       case DataCategory.OfficialID:
-        return "Official ID";
+        return 'Official ID';
       default:
         // Strip off the enum class name
-        final String enumStr = this.toString().split('.')[1];
+        final enumStr = toString().split('.')[1];
 
         // CamelCase -> Camel Case conversion
         return enumStr
-            .splitMapJoin(RegExp(r"[A-Z]"),
+            .splitMapJoin(RegExp(r'[A-Z]'),
                 onMatch: (m) => ' ${m.group(0)}', onNonMatch: (n) => n)
             .trim();
     }
   }
 
   String get categoryNameWithPrefix {
-    return this.number.toString() + ' - ' + this.categoryName;
+    return number.toString() + ' - ' + categoryName;
   }
 }
 
 DataCategory categoryStringToDataCategory(String piiCategory) {
-  int value = int.parse(piiCategory.split(" - ").first);
+  var value = int.parse(piiCategory.split(' - ').first);
 
   switch (value) {
     case 1:

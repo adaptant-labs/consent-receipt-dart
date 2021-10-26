@@ -11,8 +11,8 @@ void prettyPrintJson(String input) {
   prettyString.split('\n').forEach((element) => print(element));
 }
 
-main() {
-  final DataController dataController = DataController(
+void main() {
+  final dataController = DataController(
     piiController: 'Adaptant Solutions AG',
     onBehalf: true,
     contact: 'Max Musterman',
@@ -28,19 +28,19 @@ main() {
     piiControllerURL: 'https://www.adaptant.io',
   );
 
-  ConsentReceiptGenerator generator = ConsentReceiptGenerator(
+  var generator = ConsentReceiptGenerator(
     countryCode: 'DE',
     privacyPolicy: 'https://www.adaptant.io/privacy-policy',
     piiControllers: [dataController],
   );
 
-  Service defaultService = Service(
+  var defaultService = Service(
     purposes: [
       Purpose(
-        purpose: "To provide contracted services",
+        purpose: 'To provide contracted services',
         purposeCategory: PurposeSpecification.ContractedService,
         primaryPurpose: true,
-        termination: "Subscription end date + 1 year",
+        termination: 'Subscription end date + 1 year',
         thirdPartyDisclosure: false,
         piiCategory: [
           DataCategory.AssetData,
@@ -48,7 +48,7 @@ main() {
         ],
       ),
     ],
-    service: "default service name",
+    service: 'default service name',
   );
 
   final consentReceipt = generator.generateConsentReceipt(
@@ -77,8 +77,8 @@ main() {
   File('sample-cr.json').deleteSync();
 
   if (consentReceipt.consentReceiptID == cr.consentReceiptID) {
-    print("Parsing succeeded");
+    print('Parsing succeeded');
   } else {
-    print("Something went wrong");
+    print('Something went wrong');
   }
 }
