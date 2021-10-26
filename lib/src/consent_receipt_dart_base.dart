@@ -15,10 +15,13 @@ class ConsentReceiptGenerator {
   /// List of country codes in ISO 3166-1 alpha-2 2-character format in which
   /// processing occurs.
   final List<String> countryCodes;
+
   /// Absolute URL to the privacy policy governing the consent request.
   final String privacyPolicy;
+
   /// Optional public key for verifying requests.
   final String? publicKey;
+
   /// List of controllers and processors involved in processing activities
   /// covered by the [ConsentReceipt].
   final List<DataController> piiControllers;
@@ -50,22 +53,23 @@ class ConsentReceiptGenerator {
   /// Generate a consent receipt for a data subject given a specific method
   /// of collection, [Service], and [DataCategory].
   ConsentReceipt generateConsentReceipt(
-      {required String collectionMethod,
-      required String subjectId,
-      required List<Service> services,
-      List<DataCategory>? sensitiveData}) => ConsentReceipt(
-      piiControllers: piiControllers,
-      jurisdiction: countryCodes.join(' ').toUpperCase(),
-      consentTimestamp: _generateTimestamp(),
-      collectionMethod: collectionMethod,
-      consentReceiptID: _uuid.v4(),
-      piiPrincipalId: subjectId,
-      policyURL: privacyPolicy,
-      publicKey: publicKey,
-      services: services,
-      sensitive: sensitiveData != null,
-      spiCat: sensitiveData,
-    );
+          {required String collectionMethod,
+          required String subjectId,
+          required List<Service> services,
+          List<DataCategory>? sensitiveData}) =>
+      ConsentReceipt(
+        piiControllers: piiControllers,
+        jurisdiction: countryCodes.join(' ').toUpperCase(),
+        consentTimestamp: _generateTimestamp(),
+        collectionMethod: collectionMethod,
+        consentReceiptID: _uuid.v4(),
+        piiPrincipalId: subjectId,
+        policyURL: privacyPolicy,
+        publicKey: publicKey,
+        services: services,
+        sensitive: sensitiveData != null,
+        spiCat: sensitiveData,
+      );
 }
 
 /// A given purpose of data processing.
@@ -103,11 +107,12 @@ class Purpose {
   factory Purpose.fromJson(Map<String, dynamic> json) => Purpose(
         purpose: json['purpose'],
         consentType: json['consentType'],
-        purposeCategory:
-            PurposeSpecificationNameExtension.parseNameWithPrefix(json['purposeCategory'])!,
+        purposeCategory: PurposeSpecificationNameExtension.parseNameWithPrefix(
+            json['purposeCategory'])!,
         piiCategory: (json['piiCategory'] as List)
             .cast<String>()
-            .map((category) => DataCategoryNameExtension.parseNameWithPrefix(category)!)
+            .map((category) =>
+                DataCategoryNameExtension.parseNameWithPrefix(category)!)
             .toList(),
         primaryPurpose: json['primaryPurpose'],
         termination: json['termination'],
@@ -312,7 +317,8 @@ class ConsentReceipt {
         sensitive: json['sensitive'],
         spiCat: (json['spiCat'] as List)
             .cast<String>()
-            .map((category) => DataCategoryNameExtension.parseNameWithPrefix(category)!)
+            .map((category) =>
+                DataCategoryNameExtension.parseNameWithPrefix(category)!)
             .toList(),
       );
 
