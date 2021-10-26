@@ -1,4 +1,5 @@
 import 'package:alpha2_countries/alpha2_countries.dart';
+import 'package:consent_receipt_dart/src/consent_type.dart';
 import 'package:consent_receipt_dart/src/data_categories.dart';
 import 'package:consent_receipt_dart/src/purpose_specification.dart';
 import 'package:validators/validators.dart';
@@ -76,7 +77,7 @@ class ConsentReceiptGenerator {
 class Purpose {
   final String? purpose;
   final PurposeSpecification purposeCategory;
-  final String consentType;
+  final ConsentType consentType;
   final List<DataCategory> piiCategory;
   final bool primaryPurpose;
   final String termination;
@@ -88,7 +89,7 @@ class Purpose {
 
   Purpose({
     this.purpose,
-    this.consentType = 'EXPLICIT',
+    this.consentType = ConsentType.explicit,
     required this.purposeCategory,
     required this.piiCategory,
     this.primaryPurpose = false,
@@ -96,8 +97,7 @@ class Purpose {
     this.thirdPartyDisclosure = false,
     this.thirdPartyName,
     this.scopes,
-  })  : assert(consentType.isNotEmpty),
-        assert(piiCategory.isNotEmpty),
+  })  : assert(piiCategory.isNotEmpty),
         assert(termination.isNotEmpty),
         assert((thirdPartyDisclosure == true &&
                 (thirdPartyName != null && thirdPartyName.isNotEmpty)) ||
@@ -106,7 +106,7 @@ class Purpose {
 
   factory Purpose.fromJson(Map<String, dynamic> json) => Purpose(
         purpose: json['purpose'],
-        consentType: json['consentType'],
+        consentType: ConsentTypeNameExtension.parseName(json['consentType'])!,
         purposeCategory: PurposeSpecificationNameExtension.parseNameWithPrefix(
             json['purposeCategory'])!,
         piiCategory: (json['piiCategory'] as List)
@@ -125,7 +125,7 @@ class Purpose {
     var json = <String, dynamic>{};
 
     json['purpose'] = purpose;
-    json['consentType'] = consentType;
+    json['consentType'] = consentType.name;
     json['purposeCategory'] = purposeCategory.nameWithPrefix;
     json['piiCategory'] =
         piiCategory.map((category) => category.nameWithPrefix).toList();
