@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+/// Classification for a given [Purpose] of processing.
 enum PurposeSpecification {
   CoreFunction,
   ContractedService,
@@ -19,50 +20,12 @@ enum PurposeSpecification {
   ImprovePerformance,
 }
 
-// Dart Enums still need some work..
+/// Bi-directional [PurposeSpecification]<->String conversion extensions.
 extension PurposeSpecificationNameExtension on PurposeSpecification {
-  int get number {
-    switch (this) {
-      case PurposeSpecification.CoreFunction:
-        return 1;
-      case PurposeSpecification.ContractedService:
-        return 2;
-      case PurposeSpecification.Delivery:
-        return 3;
-      case PurposeSpecification.ContactRequested:
-        return 4;
-      case PurposeSpecification.PersonalizedExperience:
-        return 5;
-      case PurposeSpecification.Marketing:
-        return 6;
-      case PurposeSpecification.MarketingThirdParties:
-        return 7;
-      case PurposeSpecification.SharingForDelivery:
-        return 8;
-      case PurposeSpecification.SharingForMarketing:
-        return 9;
-      case PurposeSpecification.ThirdPartySharingForCoreFunction:
-        return 10;
-      case PurposeSpecification.ThirdPartySharingForOthers:
-        return 11;
-      case PurposeSpecification.LegallyRequiredDataRetention:
-        return 12;
-      case PurposeSpecification.RequiredByLawEnforcementOrGovernment:
-        return 13;
-      case PurposeSpecification.ProtectingYourHealth:
-        return 14;
-      case PurposeSpecification.ProtectingOurInterests:
-        return 15;
-      case PurposeSpecification.ImprovePerformance:
-        return 16;
-      default:
-        // Trigger assertion on any other value
-        assert(false);
-    }
+  /// The purpose ID number for a given [PurposeSpecification].
+  int get number => PurposeSpecification.values[index].index;
 
-    return 1;
-  }
-
+  /// Human-readable purpose description for a given [PurposeSpecification].
   String get description {
     switch (this) {
       case PurposeSpecification.CoreFunction:
@@ -105,7 +68,8 @@ extension PurposeSpecificationNameExtension on PurposeSpecification {
     return '';
   }
 
-  String get purposeName {
+  /// Human-readable purpose name for a given [PurposeSpecification].
+  String get name {
     switch (this) {
       case PurposeSpecification.SharingForDelivery:
         return 'Sharing for Delivery';
@@ -129,51 +93,38 @@ extension PurposeSpecificationNameExtension on PurposeSpecification {
     }
   }
 
-  String get purposeNameWithPrefix {
-    return number.toString() + ' - ' + purposeName;
-  }
-}
-
-PurposeSpecification purposeStringToPurposeSpecification(String purposeStr) {
-  var value = int.parse(purposeStr.split(' - ').first);
-
-  switch (value) {
-    case 1:
-      return PurposeSpecification.CoreFunction;
-    case 2:
-      return PurposeSpecification.ContractedService;
-    case 3:
-      return PurposeSpecification.Delivery;
-    case 4:
-      return PurposeSpecification.ContactRequested;
-    case 5:
-      return PurposeSpecification.PersonalizedExperience;
-    case 6:
-      return PurposeSpecification.Marketing;
-    case 7:
-      return PurposeSpecification.MarketingThirdParties;
-    case 8:
-      return PurposeSpecification.SharingForDelivery;
-    case 9:
-      return PurposeSpecification.SharingForMarketing;
-    case 10:
-      return PurposeSpecification.ThirdPartySharingForCoreFunction;
-    case 11:
-      return PurposeSpecification.ThirdPartySharingForOthers;
-    case 12:
-      return PurposeSpecification.LegallyRequiredDataRetention;
-    case 13:
-      return PurposeSpecification.RequiredByLawEnforcementOrGovernment;
-    case 14:
-      return PurposeSpecification.ProtectingYourHealth;
-    case 15:
-      return PurposeSpecification.ProtectingOurInterests;
-    case 16:
-      return PurposeSpecification.ImprovePerformance;
+  /// Format a [PurposeSpecification] into a human-readable `id - description`
+  /// string.
+  String get nameWithPrefix {
+    return number.toString() + ' - ' + name;
   }
 
-  // Unable to match value
-  assert(false);
+  /// Given a non-prefixed purpose name, return its corresponding
+  /// [PurposeSpecification] value, if any. Purpose matching is case
+  /// insensitive.
+  static PurposeSpecification? parseName(String purposeName) {
+    for (var purpose in PurposeSpecification.values) {
+      if (purpose.name.toLowerCase() == purposeName.toLowerCase()) {
+        return purpose;
+      }
+    }
 
-  return PurposeSpecification.CoreFunction;
+    return null;
+  }
+
+  /// Given a prefixed purpose name, return its corresponding
+  /// [PurposeSpecification] value, if any. Purpose matching is case
+  /// insensitive.
+  static PurposeSpecification? parseNameWithPrefix(String prefixedPurposeName) {
+    var parts = prefixedPurposeName.split(' - ');
+    var value = int.parse(parts.first);
+    for (var purpose in PurposeSpecification.values) {
+      if (purpose.number == value &&
+          purpose.name.toLowerCase() == parts.last.toLowerCase()) {
+        return purpose;
+      }
+    }
+
+    return null;
+  }
 }

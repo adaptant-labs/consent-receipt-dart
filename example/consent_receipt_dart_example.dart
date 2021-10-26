@@ -14,7 +14,6 @@ void prettyPrintJson(String input) {
 void main() {
   final dataController = DataController(
     piiController: 'Adaptant Solutions AG',
-    onBehalf: true,
     contact: 'Max Musterman',
     address: PostalAddress(
       addressCountry: 'DE',
@@ -28,8 +27,25 @@ void main() {
     piiControllerURL: 'https://www.adaptant.io',
   );
 
+  var dataProcessor = DataProcessor(
+      piiController: 'My Data Processor',
+      onBehalf: true,
+      contact: 'John Smith',
+      address: PostalAddress(
+        addressCountry: 'US',
+        addressLocality: 'New York',
+        addressRegion: 'NY',
+        postalCode: '10163',
+        streetAddress: '123 Street Address',
+      ),
+      email: 'privacy@mydataprocessor.tld',
+      phone: '1-234-5678',
+      piiControllerURL: 'https://mydataprocessor.tld');
+
+  print(dataProcessor.toString());
+
   var generator = ConsentReceiptGenerator(
-    countryCode: 'DE',
+    countryCodes: ['DE'],
     privacyPolicy: 'https://www.adaptant.io/privacy-policy',
     piiControllers: [dataController],
   );
@@ -62,7 +78,7 @@ void main() {
     ],
   );
 
-  final jsonStr = consentReceiptToJson(consentReceipt);
+  final jsonStr = json.encode(consentReceipt.toJson());
   prettyPrintJson(jsonStr);
 
   // Write to file
@@ -70,7 +86,7 @@ void main() {
 
   // Now read
   final data = File('sample-cr.json').readAsStringSync();
-  final cr = consentReceiptFromJson(data);
+  final cr = ConsentReceipt.fromJson(json.decode(data));
 
   print(cr);
 

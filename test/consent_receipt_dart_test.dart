@@ -9,7 +9,7 @@ void main() {
 
     setUp(() {
       gen = ConsentReceiptGenerator(
-        countryCode: 'US',
+        countryCodes: ['US'],
         privacyPolicy: 'https://www.example.com/privacy',
         piiControllers: [
           DataController(

@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+/// The category of PII to be processed.
 enum DataCategory {
   Biographical,
   Contact,
@@ -19,51 +20,13 @@ enum DataCategory {
   Profiling,
 }
 
-// Dart Enums still need some work..
+/// Bi-directional [DataCategory]<->String conversion extensions.
 extension DataCategoryNameExtension on DataCategory {
-  int get number {
-    switch (this) {
-      case DataCategory.Biographical:
-        return 1;
-      case DataCategory.Contact:
-        return 2;
-      case DataCategory.Biometric:
-        return 3;
-      case DataCategory.SocialContact:
-        return 4;
-      case DataCategory.NetworkService:
-        return 5;
-      case DataCategory.Health:
-        return 6;
-      case DataCategory.Financial:
-        return 7;
-      case DataCategory.OfficialID:
-        return 8;
-      case DataCategory.SocialBenefitData:
-        return 9;
-      case DataCategory.JudicialData:
-        return 10;
-      case DataCategory.AssetData:
-        return 11;
-      case DataCategory.HRData:
-        return 12;
-      case DataCategory.MentalHealth:
-        return 13;
-      case DataCategory.Membership:
-        return 14;
-      case DataCategory.Behavioral:
-        return 15;
-      case DataCategory.Profiling:
-        return 16;
-      default:
-        // Trigger assertion on any other value
-        assert(false);
-    }
+  /// The category ID number for a given [DataCategory].
+  int get number => DataCategory.values[index].index;
 
-    return 0;
-  }
-
-  String get categoryName {
+  /// Human-readable category name for a given [DataCategory].
+  String get name {
     switch (this) {
       case DataCategory.NetworkService:
         return 'Network/Service';
@@ -83,51 +46,35 @@ extension DataCategoryNameExtension on DataCategory {
     }
   }
 
-  String get categoryNameWithPrefix {
-    return number.toString() + ' - ' + categoryName;
-  }
-}
-
-DataCategory categoryStringToDataCategory(String piiCategory) {
-  var value = int.parse(piiCategory.split(' - ').first);
-
-  switch (value) {
-    case 1:
-      return DataCategory.Biographical;
-    case 2:
-      return DataCategory.Contact;
-    case 3:
-      return DataCategory.Biometric;
-    case 4:
-      return DataCategory.SocialContact;
-    case 5:
-      return DataCategory.NetworkService;
-    case 6:
-      return DataCategory.Health;
-    case 7:
-      return DataCategory.Financial;
-    case 8:
-      return DataCategory.OfficialID;
-    case 9:
-      return DataCategory.SocialBenefitData;
-    case 10:
-      return DataCategory.JudicialData;
-    case 11:
-      return DataCategory.AssetData;
-    case 12:
-      return DataCategory.HRData;
-    case 13:
-      return DataCategory.MentalHealth;
-    case 14:
-      return DataCategory.Membership;
-    case 15:
-      return DataCategory.Behavioral;
-    case 16:
-      return DataCategory.Profiling;
+  /// Format a [DataCategory] into a human-readable `id - description` string.
+  String get nameWithPrefix {
+    return number.toString() + ' - ' + name;
   }
 
-  // Unable to match value
-  assert(false);
+  /// Given a non-prefixed data category name, return its corresponding
+  /// [DataCategory] value, if any. Category matching is case insensitive.
+  static DataCategory? parseName(String categoryName) {
+    for (var category in DataCategory.values) {
+      if (category.name.toLowerCase() == categoryName.toLowerCase()) {
+        return category;
+      }
+    }
 
-  return DataCategory.Biographical;
+    return null;
+  }
+
+  /// Given a prefixed data category name, return its corresponding
+  /// [DataCategory] value, if any. Category matching is case insensitive.
+  static DataCategory? parseNameWithPrefix(String prefixedCategoryName) {
+    var parts = prefixedCategoryName.split(' - ');
+    var value = int.parse(parts.first);
+    for (var category in DataCategory.values) {
+      if (category.number == value &&
+          category.name.toLowerCase() == parts.last.toLowerCase()) {
+        return category;
+      }
+    }
+
+    return null;
+  }
 }
